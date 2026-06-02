@@ -3,6 +3,15 @@ import { defineConfig } from "vite";
 import dts from "vite-plugin-dts";
 
 export default defineConfig({
+    server: {
+        proxy: {
+            '/serverless': {
+                target: 'https://serverless.roboflow.com',
+                changeOrigin: true,
+                rewrite: (path) => path.replace(/^\/serverless/, '')
+            }
+        }
+    },
     resolve: {
         alias: {
             "@roboflow/inference-sdk": resolve(__dirname, "src/index.ts")

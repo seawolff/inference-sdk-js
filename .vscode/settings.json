@@ -1,8 +1,13 @@
 {
     "cSpell.words": [
         "inferencejs",
+        "keypoint",
+        "keypoints",
         "mediapipe",
         "Roboflow",
-        "tfjs"
+        "tfjs",
+        "webrtc",
+        "wrtc",
+        "yolov"
     ]
 }
