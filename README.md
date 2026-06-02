@@ -6,7 +6,7 @@ Lightweight JS client for Roboflow's hosted inference API with WebRTC streaming 
 
 > **This fork includes a real-time yoga pose detection demo** built on the SDK's WebRTC streaming pipeline.
 >
-> **[View the demo →](examples/yoga-pose.ts)** · **[Typed prediction interfaces PR →](https://github.com/roboflow/inference-sdk-js/pulls)**
+> **[View the demo →](examples/yoga-pose.ts)** · **[Typed prediction interfaces PR →](https://github.com/roboflow/inference-sdk-js/pull/20)**
 >
 > **How it works:** Uses `yolov8n-pose-640` to stream body keypoints via WebRTC. Each frame, joint positions are compared geometrically — thresholds are normalized by shoulder width so classification works at any distance from the camera. No custom model training required.
 >
