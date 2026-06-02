@@ -2,6 +2,52 @@
 
 Lightweight JS client for Roboflow's hosted inference API with WebRTC streaming support for real-time computer vision in the browser.
 
+---
+
+> **This fork includes a real-time yoga pose detection demo** built on the SDK's WebRTC streaming pipeline.
+>
+> **[View the demo →](examples/yoga-pose.ts)** · **[Typed prediction interfaces PR →](https://github.com/roboflow/inference-sdk-js/pulls)**
+>
+> **How it works:** Uses `yolov8n-pose-640` to stream body keypoints via WebRTC. Each frame, joint positions are compared geometrically — thresholds are normalized by shoulder width so classification works at any distance from the camera. No custom model training required.
+>
+> **Currently Supported poses:** 
+> + Mountain Pose
+> + Warrior II
+> + Tree Pose
+> + Headstand
+> 
+> These four were added as examples. New poses can be added easily by appending an entry to the `poses` array in [`examples/yoga-pose-classifier.ts`](examples/yoga-pose-classifier.ts) — each pose is a name and a list of geometric conditions on joint positions.
+>
+> Joints are referenced by their [COCO keypoint index](https://docs.ultralytics.com/datasets/pose/coco/) (e.g. `5` = left shoulder, `9` = left wrist). Coordinates have `y=0` at the top of the image, so a joint that is physically higher has a *smaller* `y` value. Conditions return `null` when a joint isn't visible, and `null` entries are skipped so partially-visible poses aren't penalized. The `scale` variable (shoulder width in pixels) is used to normalize thresholds so they work at any camera distance.
+>
+> ```typescript
+> {
+>     name: "Warrior I",
+>     // Arms raised overhead: wrists above the nose
+>     score: scoreConditions([
+>         nose && leftWrist  ? leftWrist.y  < nose.y : null,
+>         nose && rightWrist ? rightWrist.y < nose.y : null,
+>     ]),
+> },
+> ```
+>
+> **Core files:**
+> | File | Purpose |
+> |---|---|
+> | [`examples/yoga-pose.ts`](examples/yoga-pose.ts) | Main entry point — connects the webcam via `useStream()`, receives keypoint data each frame via `onData`, draws the skeleton overlay on a canvas |
+> | [`examples/yoga-pose-classifier.ts`](examples/yoga-pose-classifier.ts) | Pure pose classification logic — `classifyPose(keypoints)` scores each pose against geometric conditions, `scoreConditions()` handles invisible joints gracefully |
+> | [`examples/yoga-pose-classifier.test.ts`](examples/yoga-pose-classifier.test.ts) | Vitest unit tests for the classifier, one test per pose |
+>
+> **Key methods:**
+> - `webrtc.useStream()` — establishes the WebRTC connection and streams camera frames to Roboflow
+> - `onData(data)` — called each frame with raw keypoint predictions from `yolov8n-pose-640`
+> - `classifyPose(keypoints)` — returns `{ name, confidence }` for the best-matching pose
+> - `scoreConditions(conditions)` — returns the fraction of applicable geometric conditions that are true
+>
+> **To run:** `npm install && npm run dev`, then open `http://localhost:5173/examples/yoga-pose.html`
+
+---
+
 ## Installation
 
 ```bash
